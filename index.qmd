@@ -1,0 +1,12 @@
+<!-- ---
+title: RL-Team
+image: /images/RL-Team.jpg
+about:
+  template: trestles
+  image-width: 15em
+  image-shape: round
+--- -->
+
+This is the homepage for the RL-Team. We are a group of enturepeneurs, students and faculty members who are interested in Reinforcement Learning.
+
+Come join us in our learning journey!

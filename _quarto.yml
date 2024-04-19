@@ -1,0 +1,20 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: RL-Team
+  navbar:
+    right:
+      - href: index.qmd
+        text: Home
+      - href: blogs.qmd
+        text: Blogs
+
+format:
+  html:
+    theme:
+      dark: darkly
+      light: flatly
+    css: styles.css
+    toc: true
