@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="dcterms.date" content="2024-04-05">
 
-<title>RL-Team – markov-decision-processes</title>
+<title>RL-Team - Bellman Expectation Equation and Optimality</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,24 +24,24 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark.min.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -65,7 +66,7 @@ ul.task-list li input[type="checkbox"] {
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../styles.css">
 </head>
 
 <body class="nav-fixed">
@@ -75,7 +76,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">RL-Team</span>
     </a>
   </div>
@@ -86,11 +87,11 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./index.html" rel="" target="">
+    <a class="nav-link" href="../index.html" rel="" target="">
  <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./blogs.html" rel="" target="">
+    <a class="nav-link" href="../blogs.html" rel="" target="">
  <span class="menu-text">Blogs</span></a>
   </li>  
 </ul>
@@ -110,149 +111,153 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#markov-decision-processes" id="toc-markov-decision-processes" class="nav-link active" data-scroll-target="#markov-decision-processes">Markov Decision Processes</a>
+  <li><a href="#bellman-expectation-equation" id="toc-bellman-expectation-equation" class="nav-link active" data-scroll-target="#bellman-expectation-equation">Bellman Expectation Equation</a></li>
+  <li><a href="#optimal-value-function" id="toc-optimal-value-function" class="nav-link" data-scroll-target="#optimal-value-function">Optimal Value Function</a>
   <ul class="collapse">
-  <li><a href="#the-agentenvironment-interface" id="toc-the-agentenvironment-interface" class="nav-link" data-scroll-target="#the-agentenvironment-interface">The Agent–Environment Interface</a></li>
-  <li><a href="#the-markov-property" id="toc-the-markov-property" class="nav-link" data-scroll-target="#the-markov-property">The Markov Property</a>
-  <ul class="collapse">
-  <li><a href="#markov-processes" id="toc-markov-processes" class="nav-link" data-scroll-target="#markov-processes">Markov Processes</a></li>
-  <li><a href="#state-transition-probability" id="toc-state-transition-probability" class="nav-link" data-scroll-target="#state-transition-probability">State Transition Probability</a></li>
-  <li><a href="#example-of-markov-chain" id="toc-example-of-markov-chain" class="nav-link" data-scroll-target="#example-of-markov-chain">Example of Markov chain</a></li>
+  <li><a href="#optimal-state-value-function" id="toc-optimal-state-value-function" class="nav-link" data-scroll-target="#optimal-state-value-function">Optimal State Value Function</a></li>
+  <li><a href="#optimal-action-value-function" id="toc-optimal-action-value-function" class="nav-link" data-scroll-target="#optimal-action-value-function">Optimal Action Value Function</a></li>
   </ul></li>
-  <li><a href="#reward" id="toc-reward" class="nav-link" data-scroll-target="#reward">Reward</a></li>
-  <li><a href="#return" id="toc-return" class="nav-link" data-scroll-target="#return">Return</a></li>
-  <li><a href="#episodic-and-continuing-tasks" id="toc-episodic-and-continuing-tasks" class="nav-link" data-scroll-target="#episodic-and-continuing-tasks">Episodic and Continuing Tasks</a></li>
-  <li><a href="#discount-rate" id="toc-discount-rate" class="nav-link" data-scroll-target="#discount-rate">Discount Rate</a></li>
-  <li><a href="#markov-decision-processes-1" id="toc-markov-decision-processes-1" class="nav-link" data-scroll-target="#markov-decision-processes-1">Markov Decision Processes</a></li>
-  <li><a href="#policies" id="toc-policies" class="nav-link" data-scroll-target="#policies">Policies</a></li>
-  <li><a href="#value-function" id="toc-value-function" class="nav-link" data-scroll-target="#value-function">Value Function</a>
+  <li><a href="#optimal-policy" id="toc-optimal-policy" class="nav-link" data-scroll-target="#optimal-policy">Optimal Policy</a>
   <ul class="collapse">
-  <li><a href="#state-value-function" id="toc-state-value-function" class="nav-link" data-scroll-target="#state-value-function">State-Value Function</a></li>
-  <li><a href="#action-value-function" id="toc-action-value-function" class="nav-link" data-scroll-target="#action-value-function">Action-Value Function</a></li>
+  <li><a href="#finding-an-optimal-policy" id="toc-finding-an-optimal-policy" class="nav-link" data-scroll-target="#finding-an-optimal-policy">Finding an Optimal Policy:</a></li>
   </ul></li>
+  <li><a href="#bellman-optimality-equation" id="toc-bellman-optimality-equation" class="nav-link" data-scroll-target="#bellman-optimality-equation">Bellman Optimality Equation</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
-  </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Bellman Expectation Equation and Optimality</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Fundamentals</div>
+    <div class="quarto-category">Reinforcement Learning</div>
+    <div class="quarto-category">Bellman Expectation Equation</div>
+    <div class="quarto-category">Optimality</div>
+    <div class="quarto-category">Mathematics</div>
+  </div>
+  </div>
 
 
-<section id="markov-decision-processes" class="level1">
-<h1>Markov Decision Processes</h1>
-<p><strong>Reinforcement Learning</strong> is a sub-domain of machine learning where a learner called an agent interacts with its surroundings called environment. In return, the environment provides rewards and a new state determined by the actions of the agent.</p>
-<hr>
-<section id="the-agentenvironment-interface" class="level2">
-<h2 class="anchored" data-anchor-id="the-agentenvironment-interface">The Agent–Environment Interface</h2>
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 5, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<p>How do we calculate the value functions <span class="math inline">\(v_\pi (s)\)</span> and <span class="math inline">\(q_\pi (s,a)\)</span>, given a policy <span class="math inline">\(\pi\)</span>?</p>
+<section id="bellman-expectation-equation" class="level2">
+<h2 class="anchored" data-anchor-id="bellman-expectation-equation">Bellman Expectation Equation</h2>
+<p>The state-value function can be decomposed into immediate reward plus the discounted value of the successor state,</p>
+<p><span class="math display">\[ v_\pi(s) = \mathbb{E}_\pi [R_{t+1} + \gamma V_\pi(S_{t+1}) | S_t = s] \]</span></p>
+<p>The above equation is the Bellman expectation equation for the state-value function.</p>
+<p>The action-value function similarly decomposed,</p>
+<p><span class="math display">\[ q_\pi(s, a) = \mathbb{E}\pi [R{t+1} + \gamma q_{\pi}(S_{t+1}, A_{t+1}) | S_t = s, A_t = a] \]</span></p>
+<p>The above equation is the Bellman expectation equation for the action-value function.</p>
+<p><em>Back-up diagram state value</em></p>
+<p>This backup diagram describes the value of being in a particular state.</p>
+<p>Mathematically, this can be represented as,</p>
+<p><span class="math display">\[ v(s) = R_s + \gamma \sum_{s' \in S} P_{ss'} v(s') \]</span></p>
+<p>Similarly,</p>
+<p><em>backup diagram for action value</em></p>
+<p>This backup diagram shows us “how good” it is to take an action in a given state under a given policy.</p>
+<p>Mathematically, this can be represented as,</p>
+<p><span class="math display">\[ q_\pi(s, a) = R_s^a + \gamma \sum_{s' \in S} P_{ss'}^a v_\pi(s')$ \]</span></p>
+<p>If we connect and extend both the back-up diagrams to further define <span class="math inline">\(v_\pi (s)\)</span>,</p>
+<p><em>extended state value backup diagram</em></p>
+<p>Mathematically, this can be represented as,</p>
+<p><span class="math display">\[ v_\pi(s) = \sum_{a \in A} \pi(a|s) \left(R_s^a + \gamma \sum_{s' \in S} P_{ss'}^a v_\pi(s')\right) \]</span></p>
+<p>Example:</p>
+<p><em>Example</em></p>
+<p>Similarly, if we connect and extend both the back-up diagrams to further define <span class="math inline">\(q_\pi (s, a)\)</span>,</p>
+<p><em>extended action value backup diagram</em></p>
+<p>Mathematically, this can be represented as,</p>
+<p><span class="math display">\[ q_{\pi}(s, a) = R_s^a + \gamma \sum_{s' \in \mathcal{S}} P_{ss'}^a \sum_{a' \in \mathcal{A}} \pi(a'|s') q_{\pi}(s', a') \]</span></p>
+<p>Example:</p>
+<p><em>Example</em></p>
+</section>
+<section id="optimal-value-function" class="level2">
+<h2 class="anchored" data-anchor-id="optimal-value-function">Optimal Value Function</h2>
+<p>The Bellman Expectation Equations evaluate how good a state is for a particular policy. However, they do not tell us the optimal policy.</p>
+<section id="optimal-state-value-function" class="level3">
+<h3 class="anchored" data-anchor-id="optimal-state-value-function">Optimal State Value Function</h3>
+<p>The <strong>optimal state-value function</strong> <span class="math inline">\(v_{*} (s)\)</span> is the maximum state-value function for all policies</p>
+<p><span class="math display">\[ v_{*}(s) = \mathop{\max}_\pi v_\pi(s) \]</span></p>
+<p><span class="math inline">\(v_{*} (s)\)</span> tells us the maximum reward that can be extracted from the system when starting in state s. However, it doesn’t tell us what policy to follow.</p>
+</section>
+<section id="optimal-action-value-function" class="level3">
+<h3 class="anchored" data-anchor-id="optimal-action-value-function">Optimal Action Value Function</h3>
+<p>The <strong>optimal action-value function</strong> <span class="math inline">\(q_{*} (s, a)\)</span> is the maximum action-value function for all policies</p>
+<p><span class="math display">\[ q_{*}(s, a) = \mathop{\max}_\pi q_\pi(s, a) \]</span></p>
+<p><span class="math inline">\(q_{*} (s, a)\)</span> tells us the maximum reward that can be extracted from the system if action a is taken while in state s.</p>
+</section>
+</section>
+<section id="optimal-policy" class="level2">
+<h2 class="anchored" data-anchor-id="optimal-policy">Optimal Policy</h2>
+<p>In order to find an optimal policy, we have to define the notion of optimality. What does it mean for one policy to be better than another?</p>
+<p>A partial ordering over policies can be defined using the concept of value functions. The partial ordering states that one policy is better than another if the value function of the first policy is greater than or equal to the value function of the second policy for all states. This partial ordering relationship is formally expressed in the equation,</p>
+<p><span class="math display">\[ \pi \geq \pi' \text{ if } v_\pi(s) \geq v_{\pi'}(s), \forall s \]</span></p>
 <blockquote class="blockquote">
-<p>The learner and decision-maker is called the <strong>agent</strong>. The thing it interacts with, comprising everything outside the agent, is called the <strong>environment</strong>.</p>
+<p>Theorem:</p>
+<p>For any Markov Decision Process, 1. There exists an optimal policy <span class="math inline">\(\pi_{\ast}\)</span> that is better than or equal to all other policies, <span class="math inline">\(\pi_{\ast} \geq \pi, \forall \pi\)</span> 2. All optimal policies achieve the optimal value function, <span class="math inline">\(v_{\pi_{\ast}}(s) = v_{\ast}(s)\)</span> 3. All optimal policies achieve the optimal action-value function, <span class="math inline">\(q_{\pi_{\ast}}(s, a) = q_{\ast}(s, a)\)</span></p>
 </blockquote>
-<p><em>Placeholder for Image</em></p>
-<p>The environment refers to the aspects of the problem that the agent cannot directly control or manipulate. The agent’s actions, on the other hand, are the decisions that the agent is tasked with learning to make in order to maximize some reward signal.</p>
-<p>The state of the environment encompasses all the information that may be useful for the agent in choosing its actions. Notably, the agent is not assumed to be completely ignorant of the environment. For example, the agent may have some knowledge about how its actions and the resulting states lead to the calculation of rewards. However, even though the agent understands this reward function, it is still considered part of the environment because the agent cannot arbitrarily change it.</p>
-<p>This distinction between what the agent knows and what it can control is a critical concept in reinforcement learning. An agent may have a thorough understanding of the problem domain, much like a human who knows the rules of solving a Rubik’s cube but still struggles actually to find the optimal solution. The agent-environment relationship, therefore, represents the fundamental limitations on the agent’s control rather than just the limitations on its knowledge.</p>
-</section>
-<section id="the-markov-property" class="level2">
-<h2 class="anchored" data-anchor-id="the-markov-property">The Markov Property</h2>
-<blockquote class="blockquote">
-<p>“The future is independent of the past given the future.”</p>
-</blockquote>
-<p>The agent makes its decisions as a function of a signal from the environment called the environment’s state. Ideally, a state signal should summarise past actions compactly yet in such a way that all relevant information is retained. This normally requires more than the immediate actions but never more than the complete history of all past sensations. A state signal that succeeds in retaining all relevant information is said to be <strong>Markov</strong>, or to have the <strong>Markov property</strong>.</p>
-<p>Mathematically, the <strong>Markov property</strong> can be expressed as,</p>
-<pre class="math"><code>P[S_{t+1} | S_{t}] = P[S_{t+1} | S_{1}, ..., S_{t}]</code></pre>
-<section id="markov-processes" class="level3">
-<h3 class="anchored" data-anchor-id="markov-processes">Markov Processes</h3>
-<p>A <strong>Markov Process</strong> is a memoryless random process, i.e.&nbsp;a sequence of random states <span class="math inline">\(S_{1}, S_{2}, ...\)</span> with the Markov property. A Markov Process can be represented as a tuple <span class="math inline">\(\langle S, \textit{P} \rangle\)</span>, where <span class="math inline">\(S\)</span> is a finite set of states and <em>P</em> is the transition state probability matrix, <em>P</em><sub><span class="math inline">\(ss'\)</span></sub> <span class="math inline">\(= P[S_{t+1} = s' | S_{t} = s]\)</span>.</p>
-</section>
-<section id="state-transition-probability" class="level3">
-<h3 class="anchored" data-anchor-id="state-transition-probability">State Transition Probability</h3>
-<p>For Markov state <span class="math inline">\(s\)</span> and successor state <span class="math inline">\(s'\)</span>, the <strong>state transition probability</strong> is defined by,</p>
-<pre class="math"><code>\textit{P}_{ss'} = P[S_{t+1} = s' | S_{t} = s]</code></pre>
-<p>The state transition matrix <em>P</em> defines transition probabilities from all states to all successor states.</p>
-<pre class="math"><code>\textit{P} = \begin{bmatrix} 
-    \textit{P}_{11} &amp; \dots &amp; \textit{P}_{1n} \\
-    \vdots &amp; \ddots &amp; \\
-    \textit{P}_{n1} &amp;        &amp; \textit{P}_{nn} 
-    \end{bmatrix}</code></pre>
-</section>
-<section id="example-of-markov-chain" class="level3">
-<h3 class="anchored" data-anchor-id="example-of-markov-chain">Example of Markov chain</h3>
-<p><em>Image Placeholder</em></p>
+<section id="finding-an-optimal-policy" class="level3">
+<h3 class="anchored" data-anchor-id="finding-an-optimal-policy">Finding an Optimal Policy:</h3>
+<p>An optimal policy can be found by maximising over <span class="math inline">\(q_{\ast}(s, a)\)</span>,</p>
+<p><span class="math display">\[ \pi_{\ast}(a|s) = \begin{cases}
+1 &amp; \text{if } a = \arg\underset{a \in \mathcal{A}}\max q_*(s, a) \\
+0 &amp; \text{otherwise}
+\end{cases} \]</span></p>
+<ul>
+<li>There is always a deterministic optimal policy for any MDP.</li>
+<li>If we know <span class="math inline">\(q_{\ast}(s,a )\)</span>, we immediately have the optimal policy.</li>
+</ul>
+<p>Example: <em>EXAMPLE IMAGE</em></p>
 </section>
 </section>
-<section id="reward" class="level2">
-<h2 class="anchored" data-anchor-id="reward">Reward</h2>
-<blockquote class="blockquote">
-<p>All of what we mean by goals and purposes can be well thought of as the maximization of the expected value of the cumulative sum of a received scalar signal (called reward).</p>
-</blockquote>
-<p>In simpler terms, it is a numerical value given to the agent based on some action at some state in the environment.</p>
-</section>
-<section id="return" class="level2">
-<h2 class="anchored" data-anchor-id="return">Return</h2>
-<p>If the sequence of rewards received after time step <span class="math inline">\(t\)</span> is denoted <span class="math inline">\(R_{t+1}, R_{t+2}, R_{t+3}, . . .\)</span>, we seek to maximize the expected return, where the return <span class="math inline">\(G_t\)</span> is defined as some specific function of the reward sequence.</p>
-<pre class="math"><code>G_t = R_{t+1} + R_{t+2} + R_{t+3} + · · · + R_T,\text{ where T is a final time step}</code></pre>
-</section>
-<section id="episodic-and-continuing-tasks" class="level2">
-<h2 class="anchored" data-anchor-id="episodic-and-continuing-tasks">Episodic and Continuing Tasks</h2>
-<blockquote class="blockquote">
-<p>The agent–environment interaction breaks naturally into subsequences, which we call episodes. Each episode ends in a special state called the terminal state, followed by a reset to a standard starting state or to a sample from a standard distribution of starting states. Tasks with episodes of this kind are called <strong>episodic tasks</strong>.</p>
-</blockquote>
-<p>However, this is not always the case.</p>
-<blockquote class="blockquote">
-<p>In many cases the agent–environment interaction does not break naturally into identifiable episodes, but goes on continually without limit. We call these <strong>continuing tasks</strong>.</p>
-</blockquote>
-</section>
-<section id="discount-rate" class="level2">
-<h2 class="anchored" data-anchor-id="discount-rate">Discount Rate</h2>
-<blockquote class="blockquote">
-<p>The discount rate determines the present value of future rewards.</p>
-</blockquote>
-<p>The agent tries to select actions so that the sum of the discounted rewards it receives over the future is maximized. In particular, it chooses <span class="math inline">\(A_t\)</span> to maximize the expected discounted return:</p>
-<pre class="math"><code>G_t = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \dots = \sum_{k=0}^{\infty} \gamma^k R_{t+k+1}</code></pre>
-<p><span class="math inline">\(\gamma\)</span> is a parameter, <span class="math inline">\(0 \leq \gamma \leq 1\)</span>, called the <strong>discount rate</strong>. It determines the importance given to future rewards.</p>
-</section>
-<section id="markov-decision-processes-1" class="level2">
-<h2 class="anchored" data-anchor-id="markov-decision-processes-1">Markov Decision Processes</h2>
-<blockquote class="blockquote">
-<p>A reinforcement learning task that satisfies the Markov property is called a Markov decision process, or MDP. If the state and action spaces are finite, then it is called a finite Markov decision process (finite MDP).</p>
-</blockquote>
-<p>A Markov Decision Process can be represented as a tuple <span class="math inline">\(\langle S, A, \textit{P}, R, \gamma \rangle\)</span> where, - <span class="math inline">\(S\)</span> is a finite set of states * <span class="math inline">\(A\)</span> is a finite set of actions * <em>P</em> is a state transition matrix, <span class="math inline">\(P^a_{ss'} = \mathbb{P}\left[S_{t+1} = s' | S_t = s, A_t = a\right]\)</span> * <span class="math inline">\(R\)</span> is a reward function, <span class="math inline">\(R^a_s = \mathbb{E}\left[R_{t+1} | S_t = s, A_t = a\right]\)</span> * <span class="math inline">\(\gamma\)</span> is a discount rate, <span class="math inline">\(\gamma \in [0,1]\)</span></p>
-</section>
-<section id="policies" class="level2">
-<h2 class="anchored" data-anchor-id="policies">Policies</h2>
-<blockquote class="blockquote">
-<p>A policy <span class="math inline">\(\pi\)</span> is a probability distribution over actions given states.</p>
-</blockquote>
-<pre class="math"><code>\pi (a|s) = \mathbb{P}\left[A_t = a|S_t = s\right]</code></pre>
-<blockquote class="blockquote">
-<p>A policy defines the learning agent’s way of behaving at a given time. Roughly speaking, a policy is a mapping from perceived states of the environment to actions to be taken when in those states.</p>
-</blockquote>
-</section>
-<section id="value-function" class="level2">
-<h2 class="anchored" data-anchor-id="value-function">Value Function</h2>
-<blockquote class="blockquote">
-<p>Value Functions estimate how good it is for the agent to be in a given state (or how good it is to perform a given action in a given state). The notion of “how good” here is defined in terms of expected return.</p>
-</blockquote>
-<section id="state-value-function" class="level3">
-<h3 class="anchored" data-anchor-id="state-value-function">State-Value Function</h3>
-<p>The <strong>state-value function</strong> <span class="math inline">\(V_{\pi}(s)\)</span> of an MDP is the expected return starting from a state <span class="math inline">\(s\)</span> under a policy <span class="math inline">\(\pi\)</span>.</p>
-<pre class="math"><code>V_{\pi}(s) = \mathbb{E}\left[G_t|S_t = s\right] = E_\pi \left[ \sum_{k=0}^\infty \gamma^k R_{t+k+1} \, \middle| \, S_t = s \right]</code></pre>
-</section>
-<section id="action-value-function" class="level3">
-<h3 class="anchored" data-anchor-id="action-value-function">Action-Value Function</h3>
-<p>The <strong>action-value function</strong> <span class="math inline">\(q_{\pi}(s, a)\)</span> is the expected return starting from <span class="math inline">\(s\)</span>, taking the action <span class="math inline">\(a\)</span>, and thereafter following policy <span class="math inline">\(\pi\)</span>.</p>
-<pre class="math"><code>q_\pi(s, a) = \mathbb{E}_\pi \left[ G_t \, \middle| \, S_t = s, A_t = a \right] = \mathbb{E}_\pi \left[ \sum_{k=0}^\infty \gamma^k R_{t+k+1} \, \middle| \, S_t = s, A_t = a \right]</code></pre>
-</section>
+<section id="bellman-optimality-equation" class="level2">
+<h2 class="anchored" data-anchor-id="bellman-optimality-equation">Bellman Optimality Equation</h2>
+<p><em>Back Diagram state-value</em></p>
+<p>Suppose the agent is in state S, and from that state, it can take two actions (a). Instead of using the Bellman Expectation Equation to calculate the value of being in state S by taking the average of the action-values, the agent chooses the action with the greater <span class="math inline">\(q_{\ast}\)</span> value. This gives the agent the value of being in state s.</p>
+<p><span class="math display">\[ v_{\ast}(s) = \mathop{\max}_a q_{\ast}(s, a) \]</span></p>
+<p>Similarly,</p>
+<p><em>Backup diagram action-value</em></p>
+<p>Suppose the agent has taken an action a in some state s. The environment then transitions the agent to a new state s’, which could be any of the possible next states. In this case, rather than using the Bellman Expectation Equation, which would involve taking the average of the values of the possible next states, the agent uses the Bellman Optimality Equation.</p>
+<p><span class="math display">\[ q_{\ast}(s, a) = R_s^a + \gamma \sum_{s' \in \mathcal{S}} P_{ss'}^a v_{\ast}(s') \]</span></p>
+<p>If we connect and extend both the back-up diagrams,</p>
+<p><em>extended state value backup diagram</em></p>
+<p>An agent in a particular state ‘s’ will take an action a based on a policy that assigns weighted probabilities to the available actions. This action then leads the agent to end up in one of several possible next states s’, with the probabilities of ending up in each state s determined by the weighted environment. To find the value of being in the original state s, we simply average the optimal values of all the possible next states s’. This average gives us the overall value of being in state s - it tells us how good it is for the agent to be in that state, taking into account the weighted probabilities of the available actions and the resulting next states.</p>
+<p><span class="math display">\[ v_{\ast}(s) = \mathop{\max}_a (R_s^a + \gamma \sum_{s' \in \mathcal{S}} P_{ss'}^a v_{\ast}(s')) \]</span></p>
+<p>There is no dependency on the policy anymore; it is solely a function of the environment’s randomness.</p>
+<p><em>extended action value backup diagram</em></p>
+<p>Suppose our agent is in a particular state s. The agent takes an action a in that state, which may result in the agent ending up in any of several possible next states s’. From each of these possible next states, the agent wants to identify the action with the highest <span class="math inline">\(q_{\ast}\)</span> value, i.e.&nbsp;the action that will maximize the expected future reward. The agent then backs this information up to the current state s, which allows the agent to determine the overall value of taking the original action a from the current state. In this way, the agent is able to choose the action that will lead to the highest expected future reward by considering the possible future states and the best actions to take in each of them.</p>
+<p><span class="math display">\[ q_{\ast}(s, a) = R_s^a + \gamma \sum_{s' \in \mathcal{S}} P_{ss'}^a \mathop{\max}_{a'}q_{\ast}(s', a') \]</span></p>
+<p><em>Example</em></p>
 </section>
 <section id="references" class="level2">
 <h2 class="anchored" data-anchor-id="references">References</h2>
-<p>[1]: Sutton, R. S., &amp; Barto, A. G. (2018). Reinforcement learning: An introduction (2nd ed.). The MIT Press.</p>
-<p>[2]: <a href="https://subirvarma.github.io/GeneralCognitics/Course2/Lecture2_MDPs.pdf">Markov Decision Processes, Subir Varma</a>.</p>
+<ul>
+<li><p>Sutton, R. S., &amp; Barto, A. G. (2018). Reinforcement learning: An introduction (2nd ed.). The MIT Press.</p></li>
+<li><p><a href="https://subirvarma.github.io/GeneralCognitics/Course2/Lecture2_MDPs.pdf">Markov Decision Processes, Subir Varma</a>.</p></li>
+<li><p><a href="https://www.davidsilver.uk/wp-content/uploads/2020/03/MDP.pdf">Markov Decision Processes, David Silver, UCL Course on RL</a>.</p></li>
+<li><p>J. Norris, “Markov Chains,” Cambridge University Press, Cambridge, 1998.</p></li>
+</ul>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

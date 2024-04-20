@@ -2,7 +2,9 @@
   {
     "listing": "/blogs.html",
     "items": [
-      "/blogs/Markov-Decision-Processes.html"
+      "/blogs/Policy-Iteration-and-Value-Iteration.html",
+      "/blogs/Markov-Decision-Processes.html",
+      "/blogs/Bellman-Expectation-Equation.html"
     ]
   }
 ]

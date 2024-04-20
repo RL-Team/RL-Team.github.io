@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2024-04-05">
 
-<title>RL-Team - Markov Decision Processes</title>
+<title>RL-Team – policy-iteration-and-value-iteration</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -111,173 +110,157 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#the-agentenvironment-interface" id="toc-the-agentenvironment-interface" class="nav-link active" data-scroll-target="#the-agentenvironment-interface">The Agent–Environment Interface</a></li>
-  <li><a href="#the-markov-property" id="toc-the-markov-property" class="nav-link" data-scroll-target="#the-markov-property">The Markov Property</a>
+  <li><a href="#policy-iteration-and-value-iteration" id="toc-policy-iteration-and-value-iteration" class="nav-link active" data-scroll-target="#policy-iteration-and-value-iteration">Policy Iteration and Value Iteration</a>
   <ul class="collapse">
-  <li><a href="#markov-processes" id="toc-markov-processes" class="nav-link" data-scroll-target="#markov-processes">Markov Processes</a></li>
-  <li><a href="#state-transition-probability" id="toc-state-transition-probability" class="nav-link" data-scroll-target="#state-transition-probability">State Transition Probability</a></li>
-  </ul></li>
-  <li><a href="#reward" id="toc-reward" class="nav-link" data-scroll-target="#reward">Reward</a></li>
-  <li><a href="#return" id="toc-return" class="nav-link" data-scroll-target="#return">Return</a></li>
-  <li><a href="#episodic-and-continuing-tasks" id="toc-episodic-and-continuing-tasks" class="nav-link" data-scroll-target="#episodic-and-continuing-tasks">Episodic and Continuing Tasks</a></li>
-  <li><a href="#discount-rate" id="toc-discount-rate" class="nav-link" data-scroll-target="#discount-rate">Discount Rate</a></li>
-  <li><a href="#markov-decision-processes" id="toc-markov-decision-processes" class="nav-link" data-scroll-target="#markov-decision-processes">Markov Decision Processes</a></li>
-  <li><a href="#policies" id="toc-policies" class="nav-link" data-scroll-target="#policies">Policies</a></li>
-  <li><a href="#value-function" id="toc-value-function" class="nav-link" data-scroll-target="#value-function">Value Function</a>
+  <li><a href="#dynamic-programming" id="toc-dynamic-programming" class="nav-link" data-scroll-target="#dynamic-programming">Dynamic Programming</a>
   <ul class="collapse">
-  <li><a href="#state-value-function" id="toc-state-value-function" class="nav-link" data-scroll-target="#state-value-function">State-Value Function</a></li>
-  <li><a href="#action-value-function" id="toc-action-value-function" class="nav-link" data-scroll-target="#action-value-function">Action-Value Function</a></li>
+  <li><a href="#planning-by-dynamic-programming" id="toc-planning-by-dynamic-programming" class="nav-link" data-scroll-target="#planning-by-dynamic-programming">Planning by Dynamic Programming</a></li>
   </ul></li>
+  <li><a href="#iterative-policy-evaluation" id="toc-iterative-policy-evaluation" class="nav-link" data-scroll-target="#iterative-policy-evaluation">Iterative Policy Evaluation</a>
+  <ul class="collapse">
+  <li><a href="#example-gridworld" id="toc-example-gridworld" class="nav-link" data-scroll-target="#example-gridworld">Example (Gridworld):</a></li>
+  </ul></li>
+  <li><a href="#policy-iteration" id="toc-policy-iteration" class="nav-link" data-scroll-target="#policy-iteration">Policy Iteration</a>
+  <ul class="collapse">
+  <li><a href="#example-jacks-car-rental" id="toc-example-jacks-car-rental" class="nav-link" data-scroll-target="#example-jacks-car-rental">Example (Jack’s Car Rental):</a></li>
+  <li><a href="#policy-improvement" id="toc-policy-improvement" class="nav-link" data-scroll-target="#policy-improvement">Policy Improvement</a></li>
+  </ul></li>
+  <li><a href="#value-iteration" id="toc-value-iteration" class="nav-link" data-scroll-target="#value-iteration">Value Iteration</a>
+  <ul class="collapse">
+  <li><a href="#principle-of-optimality" id="toc-principle-of-optimality" class="nav-link" data-scroll-target="#principle-of-optimality">Principle of Optimality</a></li>
+  <li><a href="#deterministic-value-iteration" id="toc-deterministic-value-iteration" class="nav-link" data-scroll-target="#deterministic-value-iteration">Deterministic Value Iteration</a></li>
+  <li><a href="#value-iteration-1" id="toc-value-iteration-1" class="nav-link" data-scroll-target="#value-iteration-1">Value Iteration</a></li>
+  </ul></li>
+  <li><a href="#summary-synchronous-dynamic-programming-algorithms" id="toc-summary-synchronous-dynamic-programming-algorithms" class="nav-link" data-scroll-target="#summary-synchronous-dynamic-programming-algorithms">Summary (Synchronous Dynamic Programming Algorithms)</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Markov Decision Processes</h1>
-  <div class="quarto-categories">
-    <div class="quarto-category">Fundamentals</div>
-    <div class="quarto-category">Reinforcement Learning</div>
-    <div class="quarto-category">Markov Decision Processes</div>
-    <div class="quarto-category">Mathematics</div>
-  </div>
-  </div>
 
 
-
-<div class="quarto-title-meta">
-
-    
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">April 5, 2024</p>
-    </div>
-  </div>
-  
-    
-  </div>
-  
-
-</header>
-
-<p><strong>Reinforcement Learning</strong> is a sub-domain of machine learning where a learner called an agent interacts with its surroundings called environment. In return, the environment provides rewards and a new state determined by the actions of the agent.</p>
-<hr>
-<section id="the-agentenvironment-interface" class="level2">
-<h2 class="anchored" data-anchor-id="the-agentenvironment-interface">The Agent–Environment Interface</h2>
+<section id="policy-iteration-and-value-iteration" class="level1">
+<h1>Policy Iteration and Value Iteration</h1>
+<section id="dynamic-programming" class="level2">
+<h2 class="anchored" data-anchor-id="dynamic-programming">Dynamic Programming</h2>
 <blockquote class="blockquote">
-<p>The learner and decision-maker is called the <strong>agent</strong>. The thing it interacts with, comprising everything outside the agent, is called the <strong>environment</strong>.</p>
+<p>The term dynamic programming (DP) refers to a collection of algorithms that can be used to compute optimal policies given a perfect model of the environment as a Markov decision process (MDP).</p>
 </blockquote>
-<p><em>Placeholder for Image</em></p>
-<p>The environment refers to the aspects of the problem that the agent cannot directly control or manipulate. The agent’s actions, on the other hand, are the decisions that the agent is tasked with learning to make in order to maximize some reward signal.</p>
-<p>The state of the environment encompasses all the information that may be useful for the agent in choosing its actions. Notably, the agent is not assumed to be completely ignorant of the environment. For example, the agent may have some knowledge about how its actions and the resulting states lead to the calculation of rewards. However, even though the agent understands this reward function, it is still considered part of the environment because the agent cannot arbitrarily change it.</p>
-<p>This distinction between what the agent knows and what it can control is a critical concept in reinforcement learning. An agent may have a thorough understanding of the problem domain, much like a human who knows the rules of solving a Rubik’s cube but still struggles actually to find the optimal solution. The agent-environment relationship, therefore, represents the fundamental limitations on the agent’s control rather than just the limitations on its knowledge.</p>
+<p>Dynamic programming involves solving complex problems by breaking them down into sub-problems. Dynamic programming is a very general solution method for problems that have two properties,</p>
+<ul>
+<li><strong>Optimal Substructure</strong>: The optimal solution to a dynamic optimisation problem can be found by combining the optimal solutions to its sub-problems. This is known as the <em>Principle of Optimality</em>. Optimal solutions can be decomposed into subproblems.</li>
+<li><strong>Overlapping subproblems</strong>: Sub-problems can recur many times. The solution of one sub-problem is cached and reused to solve recursive sub-problems.</li>
+</ul>
+<p>Markov decision processes satisfy both properties,</p>
+<ul>
+<li><p>Bellman equation gives recursive decomposition. The equation breaks down finding the value function of a state by dividing it into sub-problems.</p>
+<pre class="math"><code>v_\pi(s) = \mathbb{E}_\pi [R_{t+1} + \gamma V_\pi(S_{t+1}) | S_t = s]</code></pre></li>
+<li><p>Value function stores and reuses solutions.</p></li>
+</ul>
+<section id="planning-by-dynamic-programming" class="level3">
+<h3 class="anchored" data-anchor-id="planning-by-dynamic-programming">Planning by Dynamic Programming</h3>
+<p>Dynamic programming assumes full knowledge of the MDP. It is used for <em>planning</em> in an MDP.</p>
+<p>For Prediction, - Input: MDP <span class="math inline">\(\langle S, A, \textit{P}, R, \gamma \rangle\)</span> and policy <span class="math inline">\(\pi\)</span> <strong>OR</strong> MRP <span class="math inline">\(\langle S, \textit{P}^{\pi}, R^{\pi}, \gamma \rangle\)</span> - Output: value function <span class="math inline">\(v_\pi\)</span></p>
+<p>For Control: - Input: MDP <span class="math inline">\(\langle S, A, \textit{P}, R, \gamma \rangle\)</span> - Output: optimal value function <span class="math inline">\(v_{\ast}\)</span> and optimal policy <span class="math inline">\(\pi_{\ast}\)</span>.</p>
 </section>
-<section id="the-markov-property" class="level2">
-<h2 class="anchored" data-anchor-id="the-markov-property">The Markov Property</h2>
+</section>
+<section id="iterative-policy-evaluation" class="level2">
+<h2 class="anchored" data-anchor-id="iterative-policy-evaluation">Iterative Policy Evaluation</h2>
+<p>How do we evaluate an arbitrary policy <span class="math inline">\(\pi\)</span>?</p>
+<p>We apply the Bellman Expectation Equation with iterative backups. We calculate the value of the next state by backing up the value of the current state from the previous iteration.</p>
+<pre class="math"><code>v_{k+1}(s) = \sum_{a \in A} \pi(a|s) \left( R_{s}^a + \gamma \sum_{s' \in S} P_{ss'}^{a} v_k(s') \right)</code></pre>
+<p>At each iteration <span class="math inline">\(k + 1\)</span>, update <span class="math inline">\(v_{k + 1}(s)\)</span> from <span class="math inline">\(v_{k}(s')\)</span>, for all states <span class="math inline">\(s \in \mathcal{S}\)</span>. Here, <span class="math inline">\(s'\)</span> is a successor state of <span class="math inline">\(s\)</span>.</p>
+<p><em>Backup diagram</em></p>
+<section id="example-gridworld" class="level3">
+<h3 class="anchored" data-anchor-id="example-gridworld">Example (Gridworld):</h3>
+<p><em>Image1</em></p>
+<p>The gridworld consists of a 4x4 grid with 15 states, where each cell represents a state. There is one terminal state (shown as shaded squares), and the agent receives a reward of -1 until it reaches the terminal state. The agent follows a uniform random policy, where it has an equal probability of 0.25 to move in any of the four directions (up, down, left, or right) from each state.</p>
+<pre class="math"><code>\pi(n|.) = \pi(e|.) = \pi(s|.) = \pi(w|.) = 0.25</code></pre>
+<p>Actions that would lead the agent out of the grid leave the state unchanged. The goal is to evaluate the performance of this random policy in terms of the undiscounted episodic MDP, where the discount factor <span class="math inline">\(\gamma\)</span> is set to 1, indicating that future rewards are not discounted.</p>
+<p><em>Image 2</em></p>
+</section>
+</section>
+<section id="policy-iteration" class="level2">
+<h2 class="anchored" data-anchor-id="policy-iteration">Policy Iteration</h2>
+<p>Given an initial policy <span class="math inline">\(\pi\)</span>, the process of policy improvement involves evaluating the policy and then improving it iteratively. The policy evaluation step estimates the value function <span class="math inline">\(v_{\pi}(s)\)</span> for each state s under the current policy <span class="math inline">\(\pi\)</span>.</p>
+<pre class="math"><code>v_{\pi}(s) = \mathbb{E}[R_{t+1} + \gamma R_{t+2} + ... | S_t = s]</code></pre>
+<p>The policy improvement step then updates the policy to a new policy <span class="math inline">\(\pi'\)</span> by acting greedily with respect to the value function <span class="math inline">\(v_{\pi}\)</span>.</p>
+<pre class="math"><code>\pi' = greedy(v_{\pi})</code></pre>
+<p><em>Diagram</em></p>
+<p>In the gridworld example, the policy was optimal, <span class="math inline">\(\pi' = \pi_{\ast}\)</span>. The process of policy iteration always converges to <span class="math inline">\(\pi_{\ast}\)</span>.</p>
+<section id="example-jacks-car-rental" class="level3">
+<h3 class="anchored" data-anchor-id="example-jacks-car-rental">Example (Jack’s Car Rental):</h3>
+<p>The problem involves managing a car rental business with two locations, where each location has a maximum capacity of 20 cars. The states in this problem represent the number of cars available at each location. The actions involve moving up to 5 cars between the two locations overnight to rebalance the inventory based on demand. The reward is <span class="math inline">\(\$10\)</span> for each car rented (assuming a car is available at the requested location). The transitions, or the dynamics of the environment, are determined by the random returns and requests for cars at each location. These transitions follow a Poisson distribution, n returns/requests with prob <span class="math inline">\(\frac{{e^{-\lambda } \lambda^n }}{{n!}}\)</span>, where: - At the first location, the average number of car returns and requests is 3. - At the second location, the average number of car requests is 4, and the average number of car returns is 2.</p>
+<p>The goal is to find an optimal policy for moving cars between the two locations to maximize the overall expected reward (revenue from rented cars).</p>
+<p><em>Diagram</em></p>
+<p>The plots show the progression of value functions <span class="math inline">\((v_0, v_1, v_2)\)</span> and intermediate policies <span class="math inline">\((\pi_0, \pi_1, \pi_2, \pi_3, \pi_4)\)</span> during the iterations of policy evaluation and improvement.</p>
+<p>The value functions are depicted as 3D surfaces, representing the expected future rewards for each combination of car counts at the two locations. The policies are visualized as 2D plots, indicating the optimal number of cars to move between locations for each state.</p>
+<p>Starting with an initial policy π0, the process alternates between evaluating the current policy to compute the value function and improving the policy greedily based on the value function.</p>
+<p>The iterations continue until the policy converges to the optimal policy <span class="math inline">\(\pi^{\ast}\)</span> that maximizes the expected rewards in the Car Rental problem.</p>
+</section>
+<section id="policy-improvement" class="level3">
+<h3 class="anchored" data-anchor-id="policy-improvement">Policy Improvement</h3>
+<p>Consider a deterministic policy, $a = (s). We can improve the policy by acting greedily,</p>
+<pre class="math"><code>\pi'(s) = \arg\max_{a\in\mathcal{A}} q_\pi(s, a)</code></pre>
+<p>This improves the value from any state <span class="math inline">\(s\)</span> over one step,</p>
+<pre class="math"><code>q_\pi(s, \pi'(s)) = \max_{a\in\mathcal{A}} q_\pi(s, a) \geq q_\pi(s, \pi(s)) = v_\pi(s)</code></pre>
+<p>It therefore improves the value function, <span class="math inline">\(v_{\pi'}(s) \geq v_\pi(s)\)</span></p>
+<pre class="math"><code>\begin{align*}
+v_\pi(s) &amp;\leq q_\pi(s, \pi'(s)) = \mathbb{E}\pi[R{t+1} + \gamma v_\pi(S_{t+1}) | S_t = s] \
+&amp;\leq \mathbb{E}\pi[R{t+1} + \gamma q_\pi(S_{t+1},\pi'(S_{t+1})) | S_t = s] \
+&amp;\leq \mathbb{E}\pi[R{t+1} + \gamma R_{t+2} + \gamma^2 q_\pi(S_{t+2},\pi'(S_{t+2})) | S_t = s] \
+&amp;\leq \mathbb{E}\pi[R{t+1} + \gamma R_{t+2} + \ldots | S_t = s] = v_{\pi'}(s)
+\end{align*}</code></pre>
+<p>If improvements stop,</p>
+<pre class="math"><code>q_\pi(s, \pi'(s)) = \max_{a\in\mathcal{A}} q_\pi(s, a) = q_\pi(s, \pi(s)) = v_\pi(s)</code></pre>
+<p>Then, the Bellman optimality equation has been satisfied</p>
+<pre class="math"><code>v_\pi(s) = \max_{a\in\mathcal{A}} q_\pi(s, a)</code></pre>
+<p>Therefore <span class="math inline">\(v_\pi(s) = v_*(s)\)</span> for all <span class="math inline">\(s \in \mathcal{S}\)</span>. So <span class="math inline">\(\pi\)</span> is an optimal policy.</p>
+</section>
+</section>
+<section id="value-iteration" class="level2">
+<h2 class="anchored" data-anchor-id="value-iteration">Value Iteration</h2>
+<section id="principle-of-optimality" class="level3">
+<h3 class="anchored" data-anchor-id="principle-of-optimality">Principle of Optimality</h3>
+<p>Any optimal policy can be subdivided into two components: - An optimal first action <span class="math inline">\(A\)</span>, - Followed by an optimal policy from successor state <span class="math inline">\(S'\)</span></p>
 <blockquote class="blockquote">
-<p>“The future is independent of the past given the future.”</p>
-</blockquote>
-<p>The agent makes its decisions as a function of a signal from the environment called the environment’s state. Ideally, a state signal should summarise past actions compactly yet in such a way that all relevant information is retained. This normally requires more than the immediate actions but never more than the complete history of all past sensations. A state signal that succeeds in retaining all relevant information is said to be <strong>Markov</strong>, or to have the <strong>Markov property</strong>.</p>
-<p>Mathematically, the <strong>Markov property</strong> can be expressed as,</p>
-<p><span class="math display">\[
-P[S_{t+1} | S_{t}] = P[S_{t+1} | S_{1}, ..., S_{t}]
-\]</span></p>
-<section id="markov-processes" class="level3">
-<h3 class="anchored" data-anchor-id="markov-processes">Markov Processes</h3>
-<p>A <strong>Markov Process</strong> is a memoryless random process, i.e.&nbsp;a sequence of random states <span class="math inline">\(S_{1}, S_{2}, ...\)</span> with the Markov property. A Markov Process can be represented as a tuple <span class="math inline">\(\langle S, \textit{P} \rangle\)</span>, where <span class="math inline">\(S\)</span> is a finite set of states and <em>P</em> is the transition state probability matrix, <em>P</em><sub><span class="math inline">\(ss'\)</span></sub> <span class="math inline">\(= P[S_{t+1} = s' | S_{t} = s]\)</span>.</p>
-</section>
-<section id="state-transition-probability" class="level3">
-<h3 class="anchored" data-anchor-id="state-transition-probability">State Transition Probability</h3>
-<p>For Markov state <span class="math inline">\(s\)</span> and successor state <span class="math inline">\(s'\)</span>, the <strong>state transition probability</strong> is defined by,</p>
-<p><span class="math display">\[ {P}_{ss'} = P[S_{t+1} = s' | S_{t} = s] \]</span></p>
-<p>The state transition matrix <em>P</em> defines transition probabilities from all states to all successor states.</p>
-<p><span class="math display">\[
-{P} = \begin{bmatrix}
-    \textit{P}_{11} &amp; \dots &amp; \textit{P}_{1n} \\
-    \vdots &amp; \ddots &amp; \vdots\\
-    \textit{P}_{n1} &amp; \dots &amp; \textit{P}_{nn}
-    \end{bmatrix}
-\]</span> ### Example of Markov chain</p>
-<p><em>Image Placeholder</em></p>
-</section>
-</section>
-<section id="reward" class="level2">
-<h2 class="anchored" data-anchor-id="reward">Reward</h2>
-<blockquote class="blockquote">
-<p>All of what we mean by goals and purposes can be well thought of as the maximization of the expected value of the cumulative sum of a received scalar signal (called reward).</p>
-</blockquote>
-<p>In simpler terms, it is a numerical value given to the agent based on some action at some state in the environment.</p>
-</section>
-<section id="return" class="level2">
-<h2 class="anchored" data-anchor-id="return">Return</h2>
-<p>If the sequence of rewards received after time step <span class="math inline">\(t\)</span> is denoted <span class="math inline">\(R_{t+1}, R_{t+2}, R_{t+3}, . . .\)</span>, we seek to maximize the expected return, where the return <span class="math inline">\(G_t\)</span> is defined as some specific function of the reward sequence.</p>
-<p><span class="math display">\[ G_t = R_{t+1} + R_{t+2} + R_{t+3} + · · · + R_T,\text{ where T is a final time step} \]</span></p>
-</section>
-<section id="episodic-and-continuing-tasks" class="level2">
-<h2 class="anchored" data-anchor-id="episodic-and-continuing-tasks">Episodic and Continuing Tasks</h2>
-<blockquote class="blockquote">
-<p>The agent–environment interaction breaks naturally into subsequences, which we call episodes. Each episode ends in a special state called the terminal state, followed by a reset to a standard starting state or to a sample from a standard distribution of starting states. Tasks with episodes of this kind are called <strong>episodic tasks</strong>.</p>
-</blockquote>
-<p>However, this is not always the case.</p>
-<blockquote class="blockquote">
-<p>In many cases the agent–environment interaction does not break naturally into identifiable episodes, but goes on continually without limit. We call these <strong>continuing tasks</strong>.</p>
-</blockquote>
-</section>
-<section id="discount-rate" class="level2">
-<h2 class="anchored" data-anchor-id="discount-rate">Discount Rate</h2>
-<blockquote class="blockquote">
-<p>The discount rate determines the present value of future rewards.</p>
-</blockquote>
-<p>The agent tries to select actions so that the sum of the discounted rewards it receives over the future is maximized. In particular, it chooses <span class="math inline">\(A_t\)</span> to maximize the expected discounted return:</p>
-<p><span class="math display">\[ G_t = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \dots = \sum_{k=0}^{\infty} \gamma^k R_{t+k+1} \]</span></p>
-<p><span class="math inline">\(\gamma\)</span> is a parameter, <span class="math inline">\(0 \leq \gamma \leq 1\)</span>, called the <strong>discount rate</strong>. It determines the importance given to future rewards.</p>
-</section>
-<section id="markov-decision-processes" class="level2">
-<h2 class="anchored" data-anchor-id="markov-decision-processes">Markov Decision Processes</h2>
-<blockquote class="blockquote">
-<p>A reinforcement learning task that satisfies the Markov property is called a Markov decision process, or MDP. If the state and action spaces are finite, then it is called a finite Markov decision process (finite MDP).</p>
-</blockquote>
-<p>A Markov Decision Process can be represented as a tuple <span class="math inline">\(\langle S, A, \textit{P}, R, \gamma \rangle\)</span> where, - <span class="math inline">\(S\)</span> is a finite set of states * <span class="math inline">\(A\)</span> is a finite set of actions * <em>P</em> is a state transition matrix, <span class="math inline">\(P^a_{ss'} = \mathbb{P}\left[S_{t+1} = s' | S_t = s, A_t = a\right]\)</span> * <span class="math inline">\(R\)</span> is a reward function, <span class="math inline">\(R^a_s = \mathbb{E}\left[R_{t+1} | S_t = s, A_t = a\right]\)</span> * <span class="math inline">\(\gamma\)</span> is a discount rate, <span class="math inline">\(\gamma \in [0,1]\)</span></p>
-</section>
-<section id="policies" class="level2">
-<h2 class="anchored" data-anchor-id="policies">Policies</h2>
-<blockquote class="blockquote">
-<p>A policy <span class="math inline">\(\pi\)</span> is a probability distribution over actions given states.</p>
-</blockquote>
-<p><span class="math display">\[ \pi (a|s) = \mathbb{P}\left[A_t = a|S_t = s\right] \]</span></p>
-<blockquote class="blockquote">
-<p>A policy defines the learning agent’s way of behaving at a given time. Roughly speaking, a policy is a mapping from perceived states of the environment to actions to be taken when in those states.</p>
+<p>Theorem (Principle of Optimality)</p>
+<p>A policy <span class="math inline">\(\pi(a|s)\)</span> achieves the optimal value from state <span class="math inline">\(s\)</span>, <span class="math inline">\(v_\pi(s) = v_(s)\)</span>, if and only if - For any state <span class="math inline">\(s'\)</span> reachable from <span class="math inline">\(s\)</span> - <span class="math inline">\(\pi\)</span> achieves the optimal value from state <span class="math inline">\(s'\)</span>, <span class="math inline">\(v_\pi(s') = v_(s')\)</span></p>
 </blockquote>
 </section>
-<section id="value-function" class="level2">
-<h2 class="anchored" data-anchor-id="value-function">Value Function</h2>
-<blockquote class="blockquote">
-<p>Value Functions estimate how good it is for the agent to be in a given state (or how good it is to perform a given action in a given state). The notion of “how good” here is defined in terms of expected return.</p>
-</blockquote>
-<section id="state-value-function" class="level3">
-<h3 class="anchored" data-anchor-id="state-value-function">State-Value Function</h3>
-<p>The <strong>state-value function</strong> <span class="math inline">\(V_{\pi}(s)\)</span> of an MDP is the expected return starting from a state <span class="math inline">\(s\)</span> under a policy <span class="math inline">\(\pi\)</span>. <span class="math display">\[ V_{\pi}(s) = \mathbb{E}\left[G_t|S_t = s\right] = E_\pi \left[ \sum_{k=0}^\infty \gamma^k R_{t+k+1} \, \middle| \, S_t = s \right] \]</span></p>
+<section id="deterministic-value-iteration" class="level3">
+<h3 class="anchored" data-anchor-id="deterministic-value-iteration">Deterministic Value Iteration</h3>
+<p>Value iteration is a technique used to compute the optimal value function v*(s) for a given Markov Decision Process (MDP). The idea is to iteratively update the value function using the Bellman equation until convergence.</p>
+<p>If we know the solution to the subproblems <span class="math inline">\(v_{\ast}(s')\)</span>, i.e., the optimal values for the next states <span class="math inline">\(s'\)</span>, then the optimal value <span class="math inline">\(v_{\ast}(s)\)</span> for the current state s can be found by a one-step lookahead:</p>
+<pre class="math"><code>v_{\ast}(s) \leftarrow \max_{a \in A} R^a_s + \gamma \sum_{s' \in S} P_{ss'}^a v_{\ast}(s')</code></pre>
+<p>The value iteration algorithm applies these updates iteratively, starting with an initial approximation and updating the values until convergence.</p>
+<p>The intuition behind value iteration is to start with the final rewards and work backwards, computing the optimal values by considering the immediate rewards and the discounted future rewards from the next states.</p>
+<p>Although derived for deterministic MDPs, value iteration can also be applied to stochastic (loopy) MDPs.</p>
 </section>
-<section id="action-value-function" class="level3">
-<h3 class="anchored" data-anchor-id="action-value-function">Action-Value Function</h3>
-<p>The <strong>action-value function</strong> <span class="math inline">\(q_{\pi}(s, a)\)</span> is the expected return starting from <span class="math inline">\(s\)</span>, taking the action <span class="math inline">\(a\)</span>, and thereafter following policy <span class="math inline">\(\pi\)</span>.</p>
-<p><span class="math display">\[ q_\pi(s, a) = \mathbb{E}_\pi \left[ G_t \, \middle| \, S_t = s, A_t = a \right] = \mathbb{E}_\pi \left[ \sum_{k=0}^\infty \gamma^k R_{t+k+1} \, \middle| \, S_t = s, A_t = a \right] \]</span></p>
+<section id="value-iteration-1" class="level3">
+<h3 class="anchored" data-anchor-id="value-iteration-1">Value Iteration</h3>
+<p>Problem: Find the optimal policy <span class="math inline">\(\pi\)</span></p>
+<p>We apply the Bellman Optimality Equation with iterative backups.</p>
+<pre class="math"><code>v_{k + 1}(s) = \max_{a \in A} \left[R_{s}^a + \gamma \sum_{s' \in S}  P_{ss'}^a v_{k}(s')\right]</code></pre>
+<p>At each iteration <span class="math inline">\(k + 1\)</span>, update <span class="math inline">\(v_{k + 1}(s)\)</span> from <span class="math inline">\(v_{k}(s')\)</span>, for all states <span class="math inline">\(s \in \mathcal{S}\)</span>, using synchronous backups.</p>
+<p><em>Diagram</em></p>
 </section>
+</section>
+<section id="summary-synchronous-dynamic-programming-algorithms" class="level2">
+<h2 class="anchored" data-anchor-id="summary-synchronous-dynamic-programming-algorithms">Summary (Synchronous Dynamic Programming Algorithms)</h2>
+<p><em>Image</em></p>
 </section>
 <section id="references" class="level2">
 <h2 class="anchored" data-anchor-id="references">References</h2>
-<!-- put items -->
-<ul>
-<li><p>Sutton, R. S., &amp; Barto, A. G. (2018). Reinforcement learning: An introduction (2nd ed.). The MIT Press.</p></li>
-<li><p><a href="https://subirvarma.github.io/GeneralCognitics/Course2/Lecture2_MDPs.pdf">Markov Decision Processes</a>, Subir Varma</p></li>
-<li><p>J. Norris, “Markov Chains”, Cambridge University Press, Cambridge, 1998.</p></li>
-</ul>
+<p>[1]: Sutton, R. S., &amp; Barto, A. G. (2018). Reinforcement learning: An introduction (2nd ed.). The MIT Press.</p>
+<p>[2]: <a href="https://subirvarma.github.io/GeneralCognitics/Course2/Lecture2_MDPs.pdf">Markov Decision Processes, Subir Varma</a>.</p>
+<p>[3]: <a href="https://www.davidsilver.uk/wp-content/uploads/2020/03/MDP.pdf">Markov Decision Processes, David Silver, UCL Course on RL</a>.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

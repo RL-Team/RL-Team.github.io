@@ -1,4 +1,11 @@
-# Markov Decision Processes
+---
+title: Markov Decision Processes
+# author:
+#     name: Maanit Shah
+#     url: 
+date: "April 5, 2024"
+categories: ["Fundamentals", "Reinforcement Learning", "Markov Decision Processes", "Mathematics"]
+---
 
 **Reinforcement Learning** is a sub-domain of machine learning where a learner called an agent interacts with its surroundings called environment. In return, the environment provides rewards and a new state determined by the actions of the agent.
 
