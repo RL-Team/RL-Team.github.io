@@ -1,4 +1,11 @@
-# Policy Iteration and Value Iteration
+---
+title: Policy Iteration and Value Iteration
+# author:
+#     name: Maanit Shah
+#     url: 
+date: "April 5, 2024"
+categories: ["Fundamentals", "Reinforcement Learning", "Mathematics"]
+---
 
 ## Dynamic Programming
 

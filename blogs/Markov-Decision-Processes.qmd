@@ -9,8 +9,6 @@ categories: ["Fundamentals", "Reinforcement Learning", "Markov Decision Processe
 
 **Reinforcement Learning** is a sub-domain of machine learning where a learner called an agent interacts with its surroundings called environment. In return, the environment provides rewards and a new state determined by the actions of the agent.
 
----
-
 ## The Agent–Environment Interface
 
 > The learner and decision-maker is called the **agent**.
